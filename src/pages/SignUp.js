@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
+
 
 //Estado inicial del componente
 function SignUp() {
@@ -47,15 +49,31 @@ function SignUp() {
   };
 
 //Manejar el Envío del Formulario
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (validate()) {
-      console.log('Submitting data:', userData);
-      toast.success('Registration successful!');
-    } else {
-      toast.error('Check your form for errors.');
-    }
-  };
+const handleSubmit = (event) => {
+  event.preventDefault();
+  if (validate()) {
+    // Datos que se enviarán al servidor
+    const userDataToSend = {
+      username: userData.username,
+      email: userData.email,
+      password: userData.password
+    };
+
+    // Llamada a Axios para enviar los datos
+    axios.post('http://localhost/sistema-registro/api/index.php', userDataToSend)
+      .then(response => {
+        console.log(response.data);
+        toast.success('Registration successful!');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        toast.error('Failed to register.');
+      });
+  } else {
+    toast.error('Check your form for errors.');
+  }
+};
+
 
   return (
     <>
